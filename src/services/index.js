@@ -46,4 +46,15 @@ export const budgetService = {
   delete: (id) => api.delete(`/api/budgets/${id}`),
   getAlerts: () => api.get('/api/budgets/alerts'),
   getUtilization: () => api.get('/api/budgets/utilization'),
+  getActive: () => api.get('/api/budgets/active'),
+  getByPeriod: (period) => api.get(`/api/budgets/period/${period}`),
+};
+
+export const notificationService = {
+  getAll: () => api.get('/api/notifications/user'),
+  getUnread: () => api.get('/api/notifications/unread'),
+  getUnreadCount: () => api.get('/api/notifications/unread-count'),
+  markRead: (id) => api.put(`/api/notifications/${id}/mark-read`),
+  markAllRead: () => api.put('/api/notifications/mark-all-read'),
+  delete: (id) => api.delete(`/api/notifications/${id}`),
 };
