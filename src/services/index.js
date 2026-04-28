@@ -58,3 +58,23 @@ export const notificationService = {
   markAllRead: () => api.put('/api/notifications/mark-all-read'),
   delete: (id) => api.delete(`/api/notifications/${id}`),
 };
+
+export const reportService = {
+  getMonthlySummary: (month, year) => api.get(`/api/reports/monthly?month=${month}&year=${year}`),
+  getCategoryBreakdown: (start, end) => api.get(`/api/reports/category-breakdown?start=${start}&end=${end}`),
+  getIncomeVsExpense: (month, year) => api.get(`/api/reports/income-vs-expense?month=${month}&year=${year}`),
+  getTrendAnalysis: (months = 6) => api.get(`/api/reports/trend?months=${months}`),
+  getTopCategories: (topN = 5) => api.get(`/api/reports/top-categories?topN=${topN}`),
+  getDailySpending: (month, year) => api.get(`/api/reports/daily-spending?month=${month}&year=${year}`),
+  getSavingsRate: (month, year) => api.get(`/api/reports/savings-rate?month=${month}&year=${year}`),
+  getYearlySummary: (year) => api.get(`/api/reports/yearly?year=${year}`),
+  generatePdf: (data) => api.post('/api/reports/generate-pdf', data),
+  getMyReports: () => api.get('/api/reports/my-reports'),
+  deleteReport: (id) => api.delete(`/api/reports/${id}`),
+};
+
+export const adminService = {
+  getAllUsers: () => api.get('/api/users/admin/users'),
+  suspendAccount: (userId) => api.put(`/api/users/admin/suspend/${userId}`),
+  deleteAccount: (userId) => api.delete(`/api/users/admin/delete/${userId}`),
+};

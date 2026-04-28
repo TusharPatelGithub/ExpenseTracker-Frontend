@@ -13,6 +13,8 @@ import AddEditIncome from './pages/AddEditIncome';
 import Budgets from './pages/Budgets';
 import AddEditBudget from './pages/AddEditBudget';
 import Notifications from './pages/Notifications';
+import Reports from './pages/Reports';
+import AdminDashboard from './pages/AdminDashboard';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useContext(AuthContext);
@@ -48,6 +50,14 @@ function App() {
             <Route path="/budgets/add" element={<ProtectedRoute><AddEditBudget /></ProtectedRoute>} />
             <Route path="/budgets/edit/:id" element={<ProtectedRoute><AddEditBudget /></ProtectedRoute>} />
             <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+            <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
+            <Route path="/admin" element={
+              <ProtectedRoute>
+                {/* Note: Admin role protection should ideally be enforced at the route level too, 
+                    but we'll rely on the backend for actual security. Here we just protect it. */}
+                <AdminDashboard />
+              </ProtectedRoute>
+            } />
 
             {/* Redirect */}
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
