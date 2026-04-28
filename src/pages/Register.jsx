@@ -3,13 +3,22 @@ import { Link, useNavigate } from 'react-router-dom';
 import { BiWalletAlt } from 'react-icons/bi';
 import { AuthContext } from '../context/AuthContext';
 
-function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+function Register() {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    currency: 'INR'
+  });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useContext(AuthContext);
+  
+  const { register } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,10 +26,10 @@ function Login() {
     setLoading(true);
     
     try {
-      await login(email, password);
+      await register(formData);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to login. Please check your credentials.');
+      setError(err.response?.data?.message || 'Failed to register. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -31,21 +40,34 @@ function Login() {
       <div className="glass-card animate-slide-up" style={{ width: '100%', maxWidth: '400px' }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <BiWalletAlt size={48} className="text-primary" />
-          <h2 className="text-gradient">Welcome Back</h2>
-          <p className="text-muted">Login to SpendSmart</p>
+          <h2 className="text-gradient">Create Account</h2>
+          <p className="text-muted">Start tracking with SpendSmart</p>
         </div>
         
         {error && <div className="badge badge-danger" style={{ display: 'block', marginBottom: '1rem', padding: '0.75rem', textAlign: 'center' }}>{error}</div>}
         
         <form onSubmit={handleSubmit}>
           <div className="form-group">
+            <label className="form-label">Full Name</label>
+            <input 
+              type="text" 
+              name="fullName"
+              className="form-control" 
+              placeholder="John Doe" 
+              value={formData.fullName}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
             <label className="form-label">Email Address</label>
             <input 
               type="email" 
+              name="email"
               className="form-control" 
               placeholder="you@example.com" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleChange}
               required
             />
           </div>
@@ -53,25 +75,40 @@ function Login() {
             <label className="form-label">Password</label>
             <input 
               type="password" 
+              name="password"
               className="form-control" 
               placeholder="••••••••" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleChange}
               required
             />
           </div>
+          <div className="form-group">
+            <label className="form-label">Preferred Currency</label>
+            <select 
+              name="currency" 
+              className="form-control" 
+              value={formData.currency}
+              onChange={handleChange}
+            >
+              <option value="INR">₹ INR (Indian Rupee)</option>
+              <option value="USD">$ USD (US Dollar)</option>
+              <option value="EUR">€ EUR (Euro)</option>
+              <option value="GBP">£ GBP (British Pound)</option>
+            </select>
+          </div>
           
           <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: '100%', marginTop: '1rem' }}>
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? 'Creating Account...' : 'Register'}
           </button>
         </form>
         
         <p className="text-center text-muted" style={{ marginTop: '1.5rem', fontSize: '0.9rem' }}>
-          Don't have an account? <Link to="/register" className="text-primary" style={{ textDecoration: 'none' }}>Register</Link>
+          Already have an account? <Link to="/login" className="text-primary" style={{ textDecoration: 'none' }}>Login</Link>
         </p>
       </div>
     </div>
   );
 }
 
-export default Login;
+export default Register;
