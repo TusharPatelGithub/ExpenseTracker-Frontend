@@ -8,6 +8,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api/users': 'http://localhost:5260',
+      '/api/admin': 'http://localhost:5260',
       '/api/expenses': 'http://localhost:5227',
       '/api/incomes': 'http://localhost:5257',
       '/api/categories': 'http://localhost:5026',

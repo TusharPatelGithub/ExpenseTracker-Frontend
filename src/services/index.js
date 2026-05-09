@@ -68,7 +68,7 @@ export const reportService = {
   getDailySpending: (month, year) => api.get(`/api/reports/daily-spending?month=${month}&year=${year}`),
   getSavingsRate: (month, year) => api.get(`/api/reports/savings-rate?month=${month}&year=${year}`),
   getYearlySummary: (year) => api.get(`/api/reports/yearly?year=${year}`),
-  generatePdf: (data) => api.post('/api/reports/generate-pdf', data),
+  generatePdf: (data) => api.post('/api/reports/generate-pdf', data, { responseType: 'blob' }),
   getMyReports: () => api.get('/api/reports/my-reports'),
   deleteReport: (id) => api.delete(`/api/reports/${id}`),
 };
@@ -76,6 +76,8 @@ export const reportService = {
 export const adminService = {
   getAllUsers: () => api.get('/api/admin/users'),
   suspendAccount: (userId) => api.put(`/api/admin/users/${userId}/suspend`),
+  reactivateAccount: (userId) => api.put(`/api/admin/users/${userId}/reactivate`),
+  promoteToAdmin: (userId) => api.put(`/api/admin/users/${userId}/promote`),
   deleteAccount: (userId) => api.delete(`/api/admin/users/${userId}`),
   getAnalytics: () => api.get('/api/admin/analytics'),
   getAuditLogs: (page = 1, pageSize = 50) => api.get(`/api/admin/audit-logs?page=${page}&pageSize=${pageSize}`),

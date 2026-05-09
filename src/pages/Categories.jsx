@@ -42,6 +42,7 @@ function Categories() {
       setForm({ name: '', icon: '🏷️', color: '#3b82f6', type: 'EXPENSE' });
     }
     setFormVisible(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleCloseForm = () => {
@@ -173,7 +174,7 @@ function Categories() {
                   <td style={{ padding: '0.75rem 0.5rem', fontSize: '1.5rem' }}>{c.icon}</td>
                   <td style={{ padding: '0.75rem 0.5rem', fontWeight: 500 }}>
                     {c.name}
-                    {c.isSystemDefault && <span className="badge badge-warning ml-2" style={{ marginLeft: '0.5rem', fontSize: '0.6rem' }}>Default</span>}
+                    {c.isDefault && <span className="badge badge-warning ml-2" style={{ marginLeft: '0.5rem', fontSize: '0.6rem' }}>Default</span>}
                   </td>
                   <td style={{ padding: '0.75rem 0.5rem' }}>
                     <span className={`badge ${c.type === 'INCOME' ? 'badge-success' : 'badge-danger'}`} style={{ fontSize: '0.7rem' }}>
@@ -195,7 +196,7 @@ function Categories() {
                       <button className="btn btn-outline" onClick={() => handleToggleActive(c.categoryId)} style={{ padding: '0.35rem 0.6rem', fontSize: '0.8rem' }} title="Toggle Active">
                         <BiPowerOff />
                       </button>
-                      {!c.isSystemDefault && (
+                      {!c.isDefault && (
                         <button className="btn btn-danger" onClick={() => handleDelete(c.categoryId)} style={{ padding: '0.35rem 0.6rem', fontSize: '0.8rem' }} title="Delete">
                           <BiTrash />
                         </button>

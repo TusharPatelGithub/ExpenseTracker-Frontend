@@ -5,7 +5,7 @@ import {
 } from 'chart.js';
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import { BiDownload, BiBarChartAlt2, BiTrendingUp } from 'react-icons/bi';
-import { reportService } from '../services';
+import { reportService, categoryService } from '../services';
 import { AuthContext } from '../context/AuthContext';
 
 // Register Chart.js components
@@ -40,19 +40,29 @@ function Reports() {
         const firstDay = new Date(year, month - 1, 1).toISOString();
         const lastDay = new Date(year, month, 0).toISOString();
 
-        const [catRes, incExpRes, trendRes, savRes, topCatRes] = await Promise.all([
+        const [catRes, incExpRes, trendRes, savRes, topCatRes, categoriesRes] = await Promise.all([
           reportService.getCategoryBreakdown(firstDay, lastDay),
           reportService.getIncomeVsExpense(month, year),
           reportService.getTrendAnalysis(6),
           reportService.getSavingsRate(month, year),
-          reportService.getTopCategories(5)
+          reportService.getTopCategories(5),
+          categoryService.getAll()
         ]);
 
-        setCategoryBreakdown(catRes.data || []);
+        const categories = categoriesRes.data || [];
+        const getCategoryName = (id) => categories.find(c => c.categoryId === id)?.name || `Category ${id}`;
+
+        setCategoryBreakdown((catRes.data || []).map(c => ({
+          categoryName: getCategoryName(c.categoryId),
+          totalAmount: c.total
+        })));
         setIncomeVsExpense(incExpRes.data || { totalIncome: 0, totalExpense: 0 });
         setTrend(trendRes.data || []);
         setSavingsRate(savRes.data?.SavingsRate || savRes.data?.savingsRate || 0);
-        setTopCategories(topCatRes.data || []);
+        setTopCategories((topCatRes.data || []).map(c => ({
+          categoryName: getCategoryName(c.categoryId),
+          totalAmount: c.total
+        })));
 
       } catch (err) {
         console.error("Failed to load reports:", err);
@@ -75,7 +85,20 @@ function Reports() {
           year: String(now.getFullYear())
         }
       });
-      alert(`Report generated! Access it at: ${res.data.filePath}`);
+      // Create a Blob from the PDF Stream
+      const file = new Blob([res.data], { type: 'application/pdf' });
+      const fileURL = URL.createObjectURL(file);
+      
+      // Create a temp <a> tag to download the file
+      const a = document.createElement('a');
+      a.href = fileURL;
+      a.download = `Expense_Report_${now.getFullYear()}_${now.getMonth() + 1}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      
+      // Cleanup
+      a.remove();
+      URL.revokeObjectURL(fileURL);
     } catch (err) {
       console.error(err);
       alert('Failed to generate PDF.');

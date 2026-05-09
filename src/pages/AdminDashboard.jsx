@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BiUser, BiTrash, BiBlock, BiCheckCircle, BiShieldQuarter, BiMoney, BiMessageRoundedEdit, BiHistory } from 'react-icons/bi';
+import { BiUser, BiTrash, BiBlock, BiCheckCircle, BiShieldQuarter, BiMoney, BiMessageRoundedEdit, BiHistory, BiCrown } from 'react-icons/bi';
 import { adminService } from '../services';
 
 function AdminDashboard() {
@@ -42,10 +42,24 @@ function AdminDashboard() {
     setProcessingId(userId);
     try {
       await adminService.suspendAccount(userId);
-      setUsers(prev => prev.map(u => u.userId === userId ? { ...u, isSuspended: true } : u));
+      setUsers(prev => prev.map(u => u.userId === userId ? { ...u, isActive: false } : u));
     } catch (err) {
       console.error(err);
       alert('Failed to suspend user.');
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleReactivate = async (userId) => {
+    if (!window.confirm(`Are you sure you want to reactivate user #${userId}?`)) return;
+    setProcessingId(userId);
+    try {
+      await adminService.reactivateAccount(userId);
+      setUsers(prev => prev.map(u => u.userId === userId ? { ...u, isActive: true } : u));
+    } catch (err) {
+      console.error(err);
+      alert('Failed to reactivate user.');
     } finally {
       setProcessingId(null);
     }
@@ -60,6 +74,20 @@ function AdminDashboard() {
     } catch (err) {
       console.error(err);
       alert('Failed to delete user.');
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handlePromote = async (userId) => {
+    if (!window.confirm(`Are you sure you want to promote user #${userId} to Admin? This gives them full access.`)) return;
+    setProcessingId(userId);
+    try {
+      await adminService.promoteToAdmin(userId);
+      setUsers(prev => prev.map(u => u.userId === userId ? { ...u, role: 'Admin' } : u));
+    } catch (err) {
+      console.error(err);
+      alert('Failed to promote user to Admin.');
     } finally {
       setProcessingId(null);
     }
@@ -88,8 +116,8 @@ function AdminDashboard() {
     }
   };
 
-  const activeUsers = users.filter(u => !u.isSuspended).length;
-  const suspendedUsers = users.filter(u => u.isSuspended).length;
+  const activeUsers = users.filter(u => u.isActive).length;
+  const suspendedUsers = users.filter(u => !u.isActive).length;
 
   return (
     <div className="animate-slide-up">
@@ -162,7 +190,7 @@ function AdminDashboard() {
                               background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
                               display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 600, color: 'white'
                             }}>
-                              {u.fullName?.charAt(0).toUpperCase()}
+                              {u.fullName ? u.fullName.charAt(0).toUpperCase() : 'U'}
                             </div>
                             <div>
                               <div style={{ fontSize: '0.9rem', fontWeight: 500 }}>{u.fullName}</div>
@@ -174,7 +202,7 @@ function AdminDashboard() {
                           <span className={u.role === 'Admin' ? 'badge badge-danger' : 'badge badge-primary'} style={{ fontSize: '0.65rem' }}>{u.role}</span>
                         </td>
                         <td style={{ padding: '0.75rem' }}>
-                          {u.isSuspended ? (
+                          {!u.isActive ? (
                             <span style={{ color: 'var(--warning)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}><BiBlock /> Suspended</span>
                           ) : (
                             <span style={{ color: 'var(--success)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}><BiCheckCircle /> Active</span>
@@ -184,7 +212,12 @@ function AdminDashboard() {
                           <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                             {u.role !== 'Admin' && (
                               <>
-                                <button className="btn btn-outline" onClick={() => handleSuspend(u.userId)} disabled={u.isSuspended || processingId === u.userId} style={{ padding: '0.4rem', color: u.isSuspended ? 'var(--text-muted)' : 'var(--warning)', border: 'none' }} title="Suspend User"><BiBlock size={18} /></button>
+                                <button className="btn btn-outline" onClick={() => handlePromote(u.userId)} disabled={!u.isActive || processingId === u.userId} style={{ padding: '0.4rem', color: 'var(--success)', border: 'none' }} title="Promote to Admin"><BiCrown size={18} /></button>
+                                {u.isActive ? (
+                                  <button className="btn btn-outline" onClick={() => handleSuspend(u.userId)} disabled={processingId === u.userId} style={{ padding: '0.4rem', color: 'var(--warning)', border: 'none' }} title="Suspend User"><BiBlock size={18} /></button>
+                                ) : (
+                                  <button className="btn btn-outline" onClick={() => handleReactivate(u.userId)} disabled={processingId === u.userId} style={{ padding: '0.4rem', color: 'var(--success)', border: 'none' }} title="Reactivate User"><BiCheckCircle size={18} /></button>
+                                )}
                                 <button className="btn btn-outline" onClick={() => handleDelete(u.userId)} disabled={processingId === u.userId} style={{ padding: '0.4rem', color: 'var(--danger)', border: 'none' }} title="Delete User"><BiTrash size={18} /></button>
                               </>
                             )}
