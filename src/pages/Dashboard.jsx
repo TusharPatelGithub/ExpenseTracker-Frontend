@@ -19,7 +19,9 @@ function StatCard({ title, value, icon: Icon, color, subtitle }) {
 
 function Dashboard() {
   const { user } = useContext(AuthContext);
-  const [netBalance, setNetBalance] = useState(null);
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [totalExpense, setTotalExpense] = useState(0);
+  const [netBalance, setNetBalance] = useState(0);
   const [expenses, setExpenses] = useState([]);
   const [budgets, setBudgets] = useState([]);
   const [alerts, setAlerts] = useState([]);
@@ -28,13 +30,18 @@ function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [balanceRes, expenseRes, budgetRes, alertRes] = await Promise.all([
-          incomeService.getNetBalance(),
+        const [incomeTotalRes, expenseTotalRes, expenseRes, budgetRes, alertRes] = await Promise.all([
+          incomeService.getTotal(),
+          expenseService.getTotal(),
           expenseService.getAll(),
           budgetService.getAll(),
           budgetService.getAlerts(),
         ]);
-        setNetBalance(balanceRes.data);
+        const inc = incomeTotalRes.data?.total ?? incomeTotalRes.data?.Total ?? 0;
+        const exp = expenseTotalRes.data?.total ?? expenseTotalRes.data?.Total ?? 0;
+        setTotalIncome(inc);
+        setTotalExpense(exp);
+        setNetBalance(inc - exp);
         setExpenses(expenseRes.data || []);
         setBudgets(budgetRes.data || []);
         setAlerts(alertRes.data || []);
@@ -80,7 +87,7 @@ function Dashboard() {
           <div className="flex items-center gap-2">
             <BiAlarmExclamation size={22} style={{ color: 'var(--warning)' }} />
             <span>You have <strong>{alerts.length}</strong> budget alert(s). &nbsp;
-              <Link to="/budgets/alerts" style={{ color: 'var(--warning)', textDecoration: 'none' }}>View Alerts →</Link>
+              <Link to="/notifications" style={{ color: 'var(--warning)', textDecoration: 'none' }}>View Alerts →</Link>
             </span>
           </div>
         </div>
@@ -88,9 +95,9 @@ function Dashboard() {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-4 grid-gap mb-4">
-        <StatCard title="Total Income" value={`${currency}${(netBalance?.totalIncome ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`} icon={BiTrendingUp} color="var(--success)" subtitle="This month" />
-        <StatCard title="Total Expenses" value={`${currency}${(netBalance?.totalExpense ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`} icon={BiTrendingDown} color="var(--danger)" subtitle="This month" />
-        <StatCard title="Net Balance" value={`${currency}${(netBalance?.netBalance ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`} icon={BiWallet} color="var(--primary)" subtitle="Available balance" />
+        <StatCard title="Total Income" value={`${currency}${Number(totalIncome).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`} icon={BiTrendingUp} color="var(--success)" subtitle="All time" />
+        <StatCard title="Total Expenses" value={`${currency}${Number(totalExpense).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`} icon={BiTrendingDown} color="var(--danger)" subtitle="All time" />
+        <StatCard title="Net Balance" value={`${currency}${Number(netBalance).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`} icon={BiWallet} color="var(--primary)" subtitle="Available balance" />
         <StatCard title="Active Budgets" value={budgets.length} icon={BiPieChartAlt} color="var(--warning)" subtitle={`${alerts.length} over limit`} />
       </div>
 

@@ -28,12 +28,12 @@ export const incomeService = {
 };
 
 export const categoryService = {
-  getAll: () => api.get('/api/categories/all-for-user'),
+  getAll: () => api.get('/api/categories/all'),
   getDefaults: () => api.get('/api/categories/defaults'),
   getByUser: () => api.get('/api/categories/user'),
   create: (data) => api.post('/api/categories', data),
   update: (id, data) => api.put(`/api/categories/${id}`, data),
-  deactivate: (id) => api.put(`/api/categories/${id}/deactivate`),
+  deactivate: (id) => api.patch(`/api/categories/${id}/deactivate`),
   delete: (id) => api.delete(`/api/categories/${id}`),
   seedDefaults: () => api.post('/api/categories/seed'),
 };

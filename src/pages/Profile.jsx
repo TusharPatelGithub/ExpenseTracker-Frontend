@@ -39,8 +39,10 @@ function Profile() {
             <h4>Preferences</h4>
           </div>
           <div className="form-group">
-            <label className="form-label">Preferred Currency</label>
+            <label htmlFor="currency-select" className="form-label">Preferred Currency</label>
             <select 
+              id="currency-select"
+              name="currency"
               className="form-control" 
               value={currency} 
               onChange={(e) => setCurrency(e.target.value)}
