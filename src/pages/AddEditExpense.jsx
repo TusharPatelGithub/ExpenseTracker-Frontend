@@ -13,7 +13,7 @@ function AddEditExpense() {
 
   const [form, setForm] = useState({
     description: '', amount: '', categoryId: '', date: new Date().toISOString().split('T')[0],
-    paymentMode: 'CASH', tags: '', isRecurring: false, currency: user?.currency || 'INR',
+    paymentMode: 'CASH', tags: '', isRecurring: false, currency: user?.currency || 'INR', receiptFile: null,
   });
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -34,8 +34,12 @@ function AddEditExpense() {
   }, [id, isEdit]);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setForm({ ...form, [name]: type === 'checkbox' ? checked : value });
+    const { name, value, type, checked, files } = e.target;
+    if (type === 'file') {
+      setForm({ ...form, [name]: files[0] });
+    } else {
+      setForm({ ...form, [name]: type === 'checkbox' ? checked : value });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -46,7 +50,18 @@ function AddEditExpense() {
       if (isEdit) {
         await expenseService.update(id, { ...form, amount: parseFloat(form.amount), categoryId: parseInt(form.categoryId) });
       } else {
-        await expenseService.add({ ...form, amount: parseFloat(form.amount), categoryId: parseInt(form.categoryId) });
+        const formData = new FormData();
+        formData.append('description', form.description);
+        formData.append('amount', parseFloat(form.amount));
+        formData.append('categoryId', parseInt(form.categoryId));
+        formData.append('date', form.date);
+        formData.append('paymentMode', form.paymentMode);
+        formData.append('currency', form.currency);
+        formData.append('isRecurring', form.isRecurring);
+        if (form.tags) formData.append('tags', form.tags);
+        if (form.receiptFile) formData.append('receiptFile', form.receiptFile);
+
+        await expenseService.add(formData);
       }
       navigate('/expenses');
     } catch (err) {
@@ -92,6 +107,13 @@ function AddEditExpense() {
               <label className="form-label">Tags</label>
               <input name="tags" className="form-control" placeholder="food, weekly, essentials" value={form.tags} onChange={handleChange} />
             </div>
+            {!isEdit && (
+              <div className="form-group" style={{ gridColumn: 'span 2' }}>
+                <label className="form-label">Receipt Image</label>
+                <input name="receiptFile" type="file" accept="image/*" className="form-control" onChange={handleChange} style={{ padding: '0.5rem' }} />
+                <small className="text-muted" style={{ display: 'block', marginTop: '0.25rem' }}>Upload an image of your receipt (optional).</small>
+              </div>
+            )}
           </div>
           <div className="form-group flex items-center gap-2" style={{ marginBottom: '1.5rem' }}>
             <input type="checkbox" name="isRecurring" id="isRecurring" checked={form.isRecurring} onChange={handleChange} style={{ width: '18px', height: '18px', cursor: 'pointer' }} />

@@ -6,12 +6,15 @@ const api = axios.create({
   },
 });
 
-// Add a request interceptor to inject the JWT token
+// Add a request interceptor to inject the JWT token and handle FormData
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    if (config.data instanceof FormData) {
+      delete config.headers['Content-Type'];
     }
     return config;
   },

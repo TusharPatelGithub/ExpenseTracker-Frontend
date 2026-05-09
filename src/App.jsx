@@ -12,6 +12,7 @@ import Incomes from './pages/Incomes';
 import AddEditIncome from './pages/AddEditIncome';
 import Budgets from './pages/Budgets';
 import AddEditBudget from './pages/AddEditBudget';
+import Categories from './pages/Categories';
 import Notifications from './pages/Notifications';
 import Reports from './pages/Reports';
 import AdminDashboard from './pages/AdminDashboard';
@@ -45,10 +46,11 @@ function App() {
             <Route path="/incomes/add" element={<ProtectedRoute><AddEditIncome /></ProtectedRoute>} />
             <Route path="/incomes/edit/:id" element={<ProtectedRoute><AddEditIncome /></ProtectedRoute>} />
 
-            {/* Protected routes — Phase 4: Budgets & Notifications */}
+            {/* Protected routes — Phase 4: Budgets & Notifications & Categories */}
             <Route path="/budgets" element={<ProtectedRoute><Budgets /></ProtectedRoute>} />
             <Route path="/budgets/add" element={<ProtectedRoute><AddEditBudget /></ProtectedRoute>} />
             <Route path="/budgets/edit/:id" element={<ProtectedRoute><AddEditBudget /></ProtectedRoute>} />
+            <Route path="/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
             <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
             <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
             <Route path="/admin" element={

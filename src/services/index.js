@@ -74,7 +74,10 @@ export const reportService = {
 };
 
 export const adminService = {
-  getAllUsers: () => api.get('/api/users/admin/users'),
-  suspendAccount: (userId) => api.put(`/api/users/admin/suspend/${userId}`),
-  deleteAccount: (userId) => api.delete(`/api/users/admin/delete/${userId}`),
+  getAllUsers: () => api.get('/api/admin/users'),
+  suspendAccount: (userId) => api.put(`/api/admin/users/${userId}/suspend`),
+  deleteAccount: (userId) => api.delete(`/api/admin/users/${userId}`),
+  getAnalytics: () => api.get('/api/admin/analytics'),
+  getAuditLogs: (page = 1, pageSize = 50) => api.get(`/api/admin/audit-logs?page=${page}&pageSize=${pageSize}`),
+  broadcastNotification: (data) => api.post('/api/admin/notifications/broadcast', data),
 };

@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   BiWalletAlt, BiLogOut, BiBell, BiUser,
   BiTachometer, BiDollar, BiBarChartAlt2,
-  BiPieChartAlt, BiMoney, BiShieldQuarter
+  BiPieChartAlt, BiMoney, BiShieldQuarter, BiCategory
 } from 'react-icons/bi';
 import { AuthContext } from '../context/AuthContext';
 import { notificationService } from '../services';
@@ -84,6 +84,7 @@ function Navbar() {
             <NavLink to="/expenses" icon={BiDollar} currentPath={location.pathname}>Expenses</NavLink>
             <NavLink to="/incomes" icon={BiMoney} currentPath={location.pathname}>Incomes</NavLink>
             <NavLink to="/budgets" icon={BiPieChartAlt} currentPath={location.pathname}>Budgets</NavLink>
+            <NavLink to="/categories" icon={BiCategory} currentPath={location.pathname}>Categories</NavLink>
             <NavLink to="/reports" icon={BiBarChartAlt2} currentPath={location.pathname}>Reports</NavLink>
             {user.role === 'Admin' && (
               <NavLink to="/admin" icon={BiShieldQuarter} currentPath={location.pathname}>Admin</NavLink>
