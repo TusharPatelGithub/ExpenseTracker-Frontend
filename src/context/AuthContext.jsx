@@ -44,6 +44,18 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const loginWithToken = async (token) => {
+    localStorage.setItem('token', token);
+    try {
+      const res = await api.get('/api/users/profile');
+      setUser(res.data);
+    } catch {
+      localStorage.removeItem('token');
+      setUser(null);
+      throw new Error('Failed to load profile after Google login.');
+    }
+  };
+
   const updateProfile = async (data) => {
     const res = await api.put('/api/users/profile', data);
     setUser(res.data);
@@ -55,7 +67,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, updateProfile, updateCurrency }}>
+    <AuthContext.Provider value={{ user, loading, login, loginWithToken, register, logout, updateProfile, updateCurrency }}>
       {children}
     </AuthContext.Provider>
   );
