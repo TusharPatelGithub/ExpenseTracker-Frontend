@@ -1,5 +1,29 @@
 {
   "rewrites": [
+    { "source": "/api/users", "destination": "https://expensetracker-auth.onrender.com/api/users" },
+    { "source": "/api/users/(.*)", "destination": "https://expensetracker-auth.onrender.com/api/users/$1" },
+    
+    { "source": "/api/admin", "destination": "https://expensetracker-auth.onrender.com/api/admin" },
+    { "source": "/api/admin/(.*)", "destination": "https://expensetracker-auth.onrender.com/api/admin/$1" },
+
+    { "source": "/api/expenses", "destination": "https://expensetracker-expense.onrender.com/api/expenses" },
+    { "source": "/api/expenses/(.*)", "destination": "https://expensetracker-expense.onrender.com/api/expenses/$1" },
+
+    { "source": "/api/incomes", "destination": "https://expensetracker-income.onrender.com/api/incomes" },
+    { "source": "/api/incomes/(.*)", "destination": "https://expensetracker-income.onrender.com/api/incomes/$1" },
+
+    { "source": "/api/categories", "destination": "https://expensetracker-category.onrender.com/api/categories" },
+    { "source": "/api/categories/(.*)", "destination": "https://expensetracker-category.onrender.com/api/categories/$1" },
+
+    { "source": "/api/budgets", "destination": "https://expensetracker-budget.onrender.com/api/budgets" },
+    { "source": "/api/budgets/(.*)", "destination": "https://expensetracker-budget.onrender.com/api/budgets/$1" },
+
+    { "source": "/api/reports", "destination": "https://expensetracker-report.onrender.com/api/reports" },
+    { "source": "/api/reports/(.*)", "destination": "https://expensetracker-report.onrender.com/api/reports/$1" },
+
+    { "source": "/api/notifications", "destination": "https://expensetracker-notification.onrender.com/api/notifications" },
+    { "source": "/api/notifications/(.*)", "destination": "https://expensetracker-notification.onrender.com/api/notifications/$1" },
+
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
