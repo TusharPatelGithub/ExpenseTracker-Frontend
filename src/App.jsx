@@ -16,7 +16,7 @@ import Categories from './pages/Categories';
 import Notifications from './pages/Notifications';
 import Reports from './pages/Reports';
 import AdminDashboard from './pages/AdminDashboard';
-import GoogleCallback from './pages/GoogleCallback';
+
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useContext(AuthContext);
@@ -34,7 +34,7 @@ function App() {
             {/* Public routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/auth/google/callback" element={<GoogleCallback />} />
+
 
             {/* Protected routes — Phase 2: Auth & Profile */}
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
